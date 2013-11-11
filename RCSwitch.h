@@ -87,7 +87,25 @@ class RCSwitch {
     void setReceiveTolerance(int nPercent);
 	void setProtocol(int nProtocol);
 	void setProtocol(int nProtocol, int nPulseLength);
-  
+    static unsigned int timings[RCSWITCH_MAX_CHANGES]; 
+
+		static bool receiveProtocol1(unsigned int changeCount);
+		static bool receiveProtocol2(unsigned int changeCount);
+		static bool receiveProtocol3(unsigned int changeCount);
+		static bool receiveProtocol4(unsigned int changeCount);
+		static bool receiveProtocol5(unsigned int changeCount);
+    int nReceiverInterrupt;
+    int nTransmitterPin;
+    int nPulseLength;
+    int nRepeatTransmit;
+	char nProtocol;
+
+	static int nReceiveTolerance;
+    static unsigned long nReceivedValue;
+    static unsigned int nReceivedBitlength;
+	static unsigned int nReceivedDelay;
+	static unsigned int nReceivedProtocol; 
+
   private:
     char* getCodeWordB(int nGroupNumber, int nSwitchNumber, boolean bStatus);
     char* getCodeWordA(char* sGroup, int nSwitchNumber, boolean bStatus);
@@ -99,24 +117,12 @@ class RCSwitch {
     void send1();
     void sendSync();
     void transmit(int nHighPulses, int nLowPulses);
+    void transmit2(int nLowPulses1, int nHighPulses, int nLowPulses2);
 
     static char* dec2binWzerofill(unsigned long dec, unsigned int length);
     
-    static void handleInterrupt();
-	static bool receiveProtocol1(unsigned int changeCount);
-	static bool receiveProtocol2(unsigned int changeCount);
-    int nReceiverInterrupt;
-    int nTransmitterPin;
-    int nPulseLength;
-    int nRepeatTransmit;
-	char nProtocol;
 
-	static int nReceiveTolerance;
-    static unsigned long nReceivedValue;
-    static unsigned int nReceivedBitlength;
-	static unsigned int nReceivedDelay;
-	static unsigned int nReceivedProtocol;
-    static unsigned int timings[RCSWITCH_MAX_CHANGES];
+    //static unsigned int timings[RCSWITCH_MAX_CHANGES];
 
     
 };
