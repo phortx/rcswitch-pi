@@ -441,12 +441,17 @@ void RCSwitch::enableReceive(int interrupt) {
   this->enableReceive();
 }
 
+void myInterrupt0 (void) { printf("ir"); }
+
 void RCSwitch::enableReceive() {
   if (this->nReceiverInterrupt != -1) {
     RCSwitch::nReceivedValue = NULL;
     RCSwitch::nReceivedBitlength = NULL;
+		wiringPiISR (0, INT_EDGE_BOTH, &myInterrupt0) ;
   }
 }
+
+
 
 /**
  * Disable receiving data
