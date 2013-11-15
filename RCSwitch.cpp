@@ -26,6 +26,9 @@
 
 #include "RCSwitch.h"
 #include <sys/time.h>
+
+
+void (*RCSwitch::fnReceiveCallback)(void) = NULL;
 unsigned long RCSwitch::nReceivedValue = NULL;
 unsigned int RCSwitch::nReceivedBitlength = 0;
 unsigned int RCSwitch::nReceivedDelay = 0;
@@ -514,12 +517,12 @@ bool RCSwitch::receiveProtocol1(unsigned int changeCount){
       unsigned long code = 0;
       unsigned long delay = RCSwitch::timings[0] / 31;
       unsigned long delayTolerance = delay * RCSwitch::nReceiveTolerance * 0.01;    
-			printf("delay: %lu\n", delay);
+/*			printf("delay: %lu\n", delay);
 			printf("delayTolerance: %lu\n", delayTolerance);
 			printf("RCSwitch::timings[0]=%i\n", RCSwitch::timings[0]);
 			printf("RCSwitch::timings[1]=%i\n", RCSwitch::timings[1]);
 			printf("RCSwitch::timings[2]=%i\n", RCSwitch::timings[2]);
-			printf("RCSwitch::timings[3]=%i\n\n", RCSwitch::timings[3]);
+			printf("RCSwitch::timings[3]=%i\n\n", RCSwitch::timings[3]);*/
 //			printf("RCSwitch::timings[4]=%i\n\n", RCSwitch::timings[4]);
 
       for (int i = 1; i<changeCount ; i=i+2) {
@@ -661,11 +664,13 @@ bool RCSwitch::receiveProtocol4(unsigned int changeCount){
     }
   }      
   code = code >> 1;
-  if (changeCount/2 >= 24) {
+  if (changeCount/2 >= 24 && code != 0) {
     RCSwitch::nReceivedValue = code;
     RCSwitch::nReceivedBitlength = changeCount / 2;
     RCSwitch::nReceivedDelay = delay;
     RCSwitch::nReceivedProtocol = 4;
+
+		(*RCSwitch::fnReceiveCallback)();
   }
 
   if (code == 0){
@@ -757,7 +762,7 @@ void handleInterrupt (void) {
     changeCount = 0;
     repeatCount = 0;
   }
-  if (duration > 150) {
+  if (duration > 100) {
     RCSwitch::timings[changeCount++] = duration;
   }
   lastTime = time; 
