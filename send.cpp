@@ -1,6 +1,7 @@
 /*
- Usage: ./send <systemCode> <unitCode> <command>
+ Usage: ./send <systemCode> <unitCode> <command> <pin>
  Command is 0 for OFF and 1 for ON
+ Pin is wiringPi pin naming
  */
 
 #include "RCSwitch.h"
@@ -9,18 +10,13 @@
 
 int main(int argc, char *argv[]) {
     
-    /*
-     output PIN is hardcoded for testing purposes
-     see https://projects.drogon.net/raspberry-pi/wiringpi/pins/
-     for pin mapping of the raspberry pi GPIO connector
-     */
-    int PIN = 0;
     char* systemCode = argv[1];
     int unitCode = atoi(argv[2]);
     int command  = atoi(argv[3]);
+	int PIN = atoi(argv[4]);
     
     if (wiringPiSetup () == -1) return 1;
-	printf("sending systemCode[%s] unitCode[%i] command[%i]\n", systemCode, unitCode, command);
+	printf("sending systemCode[%s] unitCode[%i] command[%i] on pin[%i]\n", systemCode, unitCode, command, PIN);
 	RCSwitch mySwitch = RCSwitch();
 	mySwitch.enableTransmit(PIN);
     
